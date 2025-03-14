@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ค้นหาสูตรยาที่เกี่ยวข้อง</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+
+<body>
+    <div th:replace="/fragments/navbar::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div class="container mt-4">
+        <div th:if="${plantsInMedicine != null and !plantsInMedicine.isEmpty()}">
+            <h1 class="mb-3" th:text="'ดูยาที่เกี่ยวข้องกับ ' + ${plantsInMedicine[0].plant.plantsName.plantName}"></h1><br>
+            <ul class="list-group" id="resultsList">
+                <li class="list-group-item" th:each="plantInMed: ${plantsInMedicine}" onclick="redirectToMedicine(this)">
+                    <span th:text="${plantInMed.medicine.medName}"></span>
+                    <span class="medId" th:text="${plantInMed.medicine.medId}" style="display:none;"></span>
+                </li>
+            </ul>            
+        </div>
+        <h1 class="mb-3" th:if="${plantsInMedicine == null or plantsInMedicine.isEmpty()}" th:text="หาสูตรยาไม่พบ"></h1>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script> 
+        function redirectToMedicine(listItem) {
+            var medIdElement = listItem.querySelector('.medId');
+            if (medIdElement) {
+                var medId = medIdElement.textContent;
+                if (medId) {
+                    window.location.href = '/medicines/' + medId;
+                } else {
+                    console.error("Medicine ID is empty.");
+                }
+            } else {
+                console.error("Medicine ID span not found.");
+            }
+        }
+    </script>
+</body>
+</html>

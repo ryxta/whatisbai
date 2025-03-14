@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขชื่อพืช</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        // Initialize CKEditor for specific text areas
+        $(document).ready(function () {
+            ClassicEditor
+                .create(document.querySelector('.rich-text-editor'))
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    </script>
+</head>
+<body>
+    <div th:replace="/fragments/navbar-pc::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div th:if="${message}" class="alert alert-info" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+    <div class="container mt-4">
+        <h1>แก้ไขชื่อพืช</h1>
+        <br>
+        <form th:action="@{/plants/name/delete/{id}(id=${plantsName.plantNameId})}" method="post" onsubmit="return confirm('คุณแน่ใจที่จะลบพืชชนิดนี้?');" style="display: inline;">
+            <button type="submit" class="btn btn-danger">ลบพืช</button>
+        </form>
+        <br>
+        <br>
+        <form id="plantsNameForm" th:action="@{/plants/name/update}" th:object="${plantsName}" method="post" enctype="multipart/form-data">
+            <input type="hidden" id="plantNameId" name="plantNameId" th:field="*{plantNameId}" />
+
+            <label for="plantName" class="form-label">ชื่อพืช</label>
+            <input type="text" id="plantName" class="form-control" th:field="*{plantName}" required /><br />
+
+            <label for="plantNameInModel" class="form-label">ชื่อพืชในโมเดล</label>
+            <input type="text" id="plantNameInModel" class="form-control" th:field="*{plantNameInModel}" required /><br />
+
+            <label for="plantImage" class="form-label">อัพโหลดภาพพืช</label>
+            <input type="file" id="plantImage" class="form-control" name="plantImage" accept="image/*" /><br />
+    
+            <div>
+                <img id="imagePreview" th:src="${plantsName.plantShowImagePath != null ? plantsName.plantShowImagePath : ''}" alt="Image Preview" th:if="${plantsName.plantShowImagePath}" style="border-radius: 10px; width: 100%; height: 100%; object-fit: cover;"/>
+            </div>          
+            <br><br>
+            <label for="plantNameDesc" class="form-label">ข้อมูลพืช</label>
+            <textarea id="plantNameDesc" class="form-control rich-text-editor" th:field="*{plantNameDesc}" rows="7" cols="80"></textarea><br />
+
+            <br>
+            <br>
+            <h2>ส่วนของพืช</h2>
+            <br>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ส่วน</th>
+                        <th>ชื่อละติน</th>
+                        <th>ชื่อทางวิทยาศาสตร์</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="plantsQueueBody">
+                    <!-- Populate with existing plants using Thymeleaf -->
+                    <tr th:each="plant : ${plantsName.plants}">
+                        <td th:text="${plant.plantUnit}"></td>
+                        <td th:text="${plant.plantLatinName}"></td>
+                        <td th:text="${plant.plantSciName}"></td>
+                        <td>
+                            <button type="button" class="removePlantButton btn btn-danger" data-id="${plant.plantId}">
+                                ลบ
+                            </button>
+                        </td>
+                        <input type="hidden" name="plantsInQueue" th:value="${plant.plantId + ':' + plant.plantUnit + ':' + plant.plantLatinName + ':' + plant.plantSciName}" />
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Hidden field to store plant data for submission -->
+            <input type="hidden" id="plantsInQueueHidden" name="plantsInQueue" />
+
+            <br>
+            <h3>เพิ่มส่วนพืชใหม่</h3>
+            <div id="addPlantForm">
+                <label for="plantUnit" class="form-label">ส่วน</label>
+                <input type="text" id="plantUnit" class="form-control" name="plantUnit"/><br />
+
+                <label for="plantLatinName" class="form-label">ชื่อละติน</label>
+                <input type="text" id="plantLatinName" class="form-control" name="plantLatinName" /><br />
+
+                <label for="plantSciName" class="form-label">ชื่อทางวิทยาศาสตร์</label>
+                <input type="text" id="plantSciName" class="form-control" name="plantSciName" /><br />
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" id="addPlantButton">เพิ่มส่วนพืช</button>
+                <button type="submit" class="btn btn-success" id="savePlantsNameButton">บันทึกข้อมูลพืช</button>
+            </div>
+        </form>
+    </div>
+    <br>
+    <br>
+    
+    <script>
+        $(document).ready(function () {
+            $("#addPlantButton").on("click", function () { 
+                var plantId = $("#plantId").val() || 0;
+                var plantUnit = $("#plantUnit").val();
+                var plantLatinName = $("#plantLatinName").val();
+                var plantSciName = $("#plantSciName").val();
+
+                var row = `<tr id="plant-${plantId}">
+                    <td>${plantUnit}</td>
+                    <td>${plantLatinName}</td>
+                    <td>${plantSciName}</td>
+                    <td><button type="button" class="removePlantButton btn btn-danger" data-id="${plantId}">ลบ</button></td>
+                    <input type="hidden" name="plantsInQueue" value="${plantId}:${plantUnit}:${plantLatinName}:${plantSciName}" id="plantInQueue-${plantId}" />
+                </tr>`;
+                $("#plantsQueueBody").append(row);
+                $("#plantId").val('');
+                $("#plantUnit").val('');
+                $("#plantLatinName").val('');
+                $("#plantSciName").val('');
+            });
+
+            // Remove plant from queue
+            $("#plantsQueueBody").on('click', '.removePlantButton', function () {
+                $(this).closest('tr').remove();
+            });
+            $("#plantImage").on("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#imagePreview").attr("src", e.target.result).show();
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    $("#imagePreview").hide();
+                }
+            });
+
+
+        });
+    </script>
+</body>
+</html>

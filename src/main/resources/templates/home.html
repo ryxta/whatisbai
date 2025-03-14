@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าหลัก</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div th:replace="/fragments/navbar-pc::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div class="container mt-4">
+        <h1>หน้าหลัก</h1>
+        <p>คุณต้องการทำอะไร?</p>
+        <div class="container mt-4">
+            <div class="row">
+                <!-- Card 1: Verify Record -->
+                <div class="col-md-6 mb-3" th:if="${userRole == 'ADMIN' or userRole == 'EXPERTS'}">
+                    <div class="card" style="background-color: #8FC18D; border-radius: 20px; cursor: pointer;" th:onclick="window.location.href='/verifyrecord'">
+                        <div class="row g-0 align-items-center">
+                            <!-- Image Section -->
+                            <div class="col-6">
+                                <img th:src="@{/icon/verify-icon.png}" 
+                                    alt="Verify icon" class="img-fluid" 
+                                    style="border-radius: 10px; width: 150px; height: 150px; object-fit: cover;" />
+                            </div>
+                            <div class="col-6">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="font-weight: 400; color: white;">ยืนยันข้อมูล</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2: Export Dataset -->
+                <div class="col-md-6 mb-3" th:if="${userRole == 'ADMIN' or userRole == 'DEVELOPER'}">
+                    <div class="card" style="background-color: #8FC18D; border-radius: 20px; cursor: pointer;" th:onclick="window.location.href='/exportdataset'">
+                        <div class="row g-0 align-items-center">
+                            <!-- Image Section -->
+                            <div class="col-6">
+                                <img th:src="@{/icon/export-icon.png}" 
+                                    alt="Export icon" class="img-fluid" 
+                                    style="border-radius: 10px; width: 150px; height: 150px; object-fit: cover;" />
+                            </div>
+                            <div class="col-6">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="font-weight: 400; color: white;">ส่งออกข้อมูล</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card" style="background-color: #8FC18D; border-radius: 20px; cursor: pointer;" th:onclick="window.location.href='/medicines/viewall'">
+                        <div class="row g-0 align-items-center">
+                            <!-- Image Section -->
+                            <div class="col-6">
+                                <img th:src="@{/icon/medicine-icon.png}" 
+                                    alt="Export icon" class="img-fluid" 
+                                    style="border-radius: 10px; width: 150px; height: 150px; object-fit: cover;" />
+                            </div>
+                            <div class="col-6">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="font-weight: 400; color: white;">ข้อมูลยา</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card" style="background-color: #8FC18D; border-radius: 20px; cursor: pointer;" th:onclick="window.location.href='/plants/name/viewall'">
+                        <div class="row g-0 align-items-center">
+                            <!-- Image Section -->
+                            <div class="col-6">
+                                <img th:src="@{/icon/plant-icon.png}" 
+                                    alt="Export icon" class="img-fluid" 
+                                    style="border-radius: 10px; width: 150px; height: 150px; object-fit: cover;" />
+                            </div>
+                            <div class="col-6">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="font-weight: 400; color: white;">ข้อมูลพืช</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3" th:if="${userRole == 'ADMIN'}">
+                    <div class="card" style="background-color: #8FC18D; border-radius: 20px; cursor: pointer;" th:onclick="window.location.href='/usercontrol'">
+                        <div class="row g-0 align-items-center">
+                            <!-- Image Section -->
+                            <div class="col-6">
+                                <img th:src="@{/icon/user-icon.png}" 
+                                    alt="Export icon" class="img-fluid" 
+                                    style="border-radius: 10px; width: 150px; height: 150px; object-fit: cover;" />
+                            </div>
+                            <div class="col-6">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="font-weight: 400; color: white;">จัดการผู้ใช้</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    
+</body>
+</html>

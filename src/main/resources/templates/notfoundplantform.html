@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผลการค้นหา</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div th:replace="/fragments/navbar::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div class="container mt-4">
+        <h2>ขออภัย เราหาไม่เจอ</h2>
+        <br>
+        <form action="/submitwithname" method="POST">
+            <input type="hidden" name="filePath" th:value="${filePath}">     
+            <p>หากคุณทราบชื่อพืชชนิดนี้ สามารถช่วยเหลือในการพัฒนาด้วยการกรอกชื่อพืชชนิดนี้ข้างล่าง</p>
+            <br>
+            <div class="input-group mb-3">
+                <input type="text" name="plantNameSubmit" class="form-control" placeholder="ชื่อพืช" aria-label="ชื่อพืช">
+            </div>
+            <button type="submit" class="btn btn-success float-end">ส่งคำตอบ</button>
+        </form>
+
+        <br>
+        <br>
+        <p>หรือหากเจอพืชที่ถูกต้องข้างล่างนี้ กรุณากด "ฉันเจอแล้ว"</p>
+        <div class="row" th:each="plant : ${plantsNameList}">
+            <div class="col-12 mb-3">
+                <div class="card" style="background-color: #8FC18D; border-radius: 20px;">
+                    <div class="row g-0 align-items-center">
+                        <!-- Image Section -->
+                        <div class="col-4">
+                            <img th:if="${plant.plantShowImagePath != null && plant.plantShowImagePath != ''}" 
+                                 th:src="${plant.plantShowImagePath}" 
+                                 alt="Plant Image" class="img-fluid" 
+                                 style="border-radius: 10px; width: 200px; height: 100px; object-fit: cover;" />
+                        
+                            <img th:if="${plant.plantShowImagePath == null || plant.plantShowImagePath == ''}" 
+                                 th:src="@{/displayplantimage/defaultplant.png}" 
+                                 alt="Default Plant Image" class="img-fluid" 
+                                 style="border-radius: 10px; width: 200px; height: 100px; object-fit: cover;" />
+                        </div>
+                        <!--
+                        <div class="col-4">
+                            <img th:src="@{{image}(image=${plant.plantShowImagePath})}" 
+                                 alt="Plant Image" class="img-fluid" 
+                                 style="border-radius: 10px; width: 200px; height: 100px; object-fit: cover;" />
+                        </div>
+                    -->
+
+                        <!-- Text Section -->
+                        <div class="col-8">
+                            <div class="card-body">
+                                <!-- Plant Name -->
+                                <h5 class="card-title" th:text="${plant.plantName}" style="font-weight: 700;"></h5>
+                                <form th:action="@{/plantsname/{id}(id=${plant.plantNameId})}" method="post">
+                                    <!-- Include hidden filePath in each form -->
+                                    <input type="hidden" name="filePath" th:value="${filePath}" />
+                                    <button type="submit" class="btn btn-light mt-3" style="border-radius: 10px;">ฉันเจอแล้ว</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+</body>
+</html>

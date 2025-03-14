@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ส่งออกชุดข้อมูล</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+
+<body>
+    <div th:replace="/fragments/navbar-pc::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div class="container mt-4">
+        <h1>ส่งออกชุดข้อมูล</h1>
+        <br>
+
+        <!-- Form to handle the export -->
+        <form th:action="@{/exportdataset}" method="post">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ชื่อไทย</th>
+                        <th>ชื่อในโมเดล</th>
+                        <th>จำนวนข้อมูล</th> <!-- Number of images -->
+                        <th>
+                            <!-- Select All checkbox -->
+                            <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" /> เลือกทั้งหมด
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="ver : ${verifiedPlantsName}">
+                        <td th:text="${ver.plantName}"></td>
+                        <td th:text="${ver.plantNameInModel}"></td>
+                        <td th:text="${plantImageMap[ver.plantNameId].size()}"></td>
+                        <td>
+                            <!-- Checkbox for each plant, value is the plantNameId -->
+                            <input type="checkbox" name="selectedPlantIds" th:value="${ver.plantNameId}" onclick="toggleExportButton()" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+
+            <div class="d-flex justify-content-between">
+                <!-- View Log button -->
+                <a href="/viewexportlog" class="btn btn-secondary">ดูประวัติการส่งออก</a>
+
+                <!-- Submit button (initially disabled) -->
+                <button type="submit" class="btn btn-primary" id="exportButton" disabled>ส่งออกชุดข้อมูล</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Function to toggle the 'Select All' checkboxes
+        function toggleSelectAll(source) {
+            let checkboxes = document.querySelectorAll('input[name="selectedPlantIds"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = source.checked; // Select/Deselect all checkboxes
+            });
+            toggleExportButton(); // Check if the export button should be enabled
+        }
+
+        // Function to check if any checkboxes are selected and enable/disable the Export button
+        function toggleExportButton() {
+            let checkboxes = document.querySelectorAll('input[name="selectedPlantIds"]');
+            let exportButton = document.getElementById("exportButton");
+            let anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            exportButton.disabled = !anyChecked; // Disable if none are selected
+        }
+    </script>
+</body>
+
+</html>

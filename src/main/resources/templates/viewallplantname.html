@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขชื่อพืช</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+</head>
+
+<body>
+    <div th:replace="/fragments/navbar-pc::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div class="container mt-4">
+        <h1 class="mb-3">แก้ไขชื่อพืช</h1>
+
+        <div class="d-flex justify-content-between mb-3">
+            <input type="text" id="plantsName" class="form-control w-75" placeholder="ชื่อพืช" aria-label="ชื่อพืช">
+            <button id="newPlantsNameBtn" class="btn btn-primary">เพิ่มพืชใหม่</button>
+        </div>
+
+        <p>คลิกรายการพืชเพื่อแก้ไข</p>
+        <ul id="resultsList" class="list-group">
+        </ul>
+    </div>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            function loadInitialPlantsName() {
+                $.ajax({
+                    url: '/plants/name/initial-plantsname',
+                    dataType: "json",
+                    success: function (data) {
+                        $("#resultsList").empty();
+                        data.forEach(function (plantsName) {
+                            $("#resultsList").append(`
+                                <li class="list-group-item d-flex justify-content-between align-items-center" data-id="${plantsName.value}">
+                                    ${plantsName.label}
+                                </li>
+                            `);
+                        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('Error fetching initial plants name', textStatus, errorThrown);
+                    }
+                });
+            }
+
+            loadInitialPlantsName();
+
+            // Search functionality
+            $("#plantsName").on("input", function () {
+                var searchTerm = $(this).val();
+
+                if (searchTerm.length > 0) {
+                    $.ajax({
+                        url: '/plants/name/search-plantsname',
+                        dataType: "json",
+                        data: {
+                            term: searchTerm
+                        },
+                        success: function (data) {
+                            $("#resultsList").empty();
+
+                            if (data.length > 0) {
+                                data.forEach(function (plantsName) {
+                                    $("#resultsList").append(`
+                                        <li class="list-group-item d-flex justify-content-between align-items-center" data-id="${plantsName.value}">
+                                            ${plantsName.label}
+                                        </li>
+                                    `);
+                                });
+                            } else {
+                                $("#resultsList").empty();
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error('Error fetching plants name data', textStatus, errorThrown);
+                        }
+                    });
+                } else {
+                    loadInitialPlantsName();
+                }
+            });
+
+            $("#resultsList").on("click", ".list-group-item", function () {
+                var plantsNameId = $(this).data("id");
+                window.location.href = `/plants/name/edit/${plantsNameId}`;
+            });
+
+
+            $("#newPlantsNameBtn").on("click", function () {
+                window.location.href = '/plants/name/new';
+            });
+        });
+    </script>
+</body>
+
+</html>

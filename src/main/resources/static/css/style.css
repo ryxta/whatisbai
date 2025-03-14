@@ -1,0 +1,226 @@
+/* Import the Google Font Kanit */
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap');
+
+/* Apply the Kanit font to the entire body */
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #83B280 !important;  /* Light green */
+}
+
+.navbar-brand {
+    font-weight: 500;
+    color: 000000 !important;
+}
+
+.nav-link {
+    color: #ffffff !important;
+}
+
+.nav-link:hover {
+    color: #d4e157 !important;  /* Light yellow on hover */
+}
+
+.nav-item {
+    font-weight: 300;
+    color: #ffffff;
+}
+
+/* Page Title */
+h1 {
+    font-weight: 500;
+    color: #000000;  /* Green */
+}
+
+/* Input field for search */
+.input-group .form-control {
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #8bc34a;
+}
+
+.input-group .btn {
+    background-color: #8bc34a;
+    color: white;
+    border-radius: 0 10px 10px 0;
+}
+
+/* List group items for medicine search */
+.list-group-item {
+    background-color: #c5e1a5;  /* Light green background */
+    color: #000000;
+    border: none;
+    margin-bottom: 5px;
+}
+
+.list-group-item:hover {
+    background-color: #aed581;  /* Slightly darker on hover */
+    cursor: pointer;
+}
+
+/* CSS for alternating row colors */
+.list-group-item:nth-child(even) {
+    background-color: #B5D1B3; /* Light gray background for even rows */
+}
+
+.list-group-item:nth-child(odd) {
+    background-color: #8fb98c; /* White background for odd rows */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Collapses borders into a single border */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+thead th {
+    background-color: #c5e1a5; /* Light green background for the header */
+    color: #000000; /* Text color */
+    font-family: 'Kanit', sans-serif; /* Font family */
+    font-size: 16px; /* Font size */
+    font-weight: bold; /* Make text bold */
+    text-transform: uppercase; /* Make text uppercase */
+    padding: 10px; /* Padding inside header cells */
+    text-align: center; /* Align text to the center */
+    /*border: 1px solid #000;*/ /* Border for header cells */
+}
+
+tbody th {
+    padding: 10px;
+    color: #000000;
+    font-weight: 400;
+    text-align: left;
+}
+
+tbody tr {
+    /*border-bottom: 1px solid #000;*/ /* Add bottom border to each row */
+}
+
+/* Styling for even rows */
+tbody tr:nth-child(even) {
+    background-color: #8fb98c;
+}
+
+/* Styling for odd rows */
+tbody tr:nth-child(odd) {
+    background-color: #B5D1B3;
+}
+
+/* Add borders to all table cells */
+td, th {
+    padding: 10px; /* Add padding to all table cells */
+    /*border: 1px solid #000;*/ /* Add border to separate columns */
+}
+
+
+p {
+    margin: 0 0 10px; /* Add margin at the bottom of paragraphs for spacing */
+    font-size: 16px; /* Adjust font size as needed */
+    line-height: 1.5; /* Adjust line height for better readability */
+}
+
+.upload-section {
+    margin: 20px auto;
+    background-color: #F5F5F5;
+    border: 2px dashed #C5E1A5;
+    border-radius: 10px;
+    padding: 30px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.upload-section img {
+    width: 200px;
+    margin-bottom: 15px;
+}
+
+.upload-section input[type="file"] {
+    display: none;
+}
+
+.upload-section label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.upload-section .custom-file-upload {
+    background-color: #7CB342;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.upload-section p {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 10px;
+}
+
+.btn-upload {
+    background-color: #7CB342;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.card {
+    background-color: #8FC18D;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+.card-title {
+    font-weight: 700;
+}
+
+.progress-bar {
+    background-color: #ffffff;
+}
+
+.btn-upload {
+    background-color: #FFFFFF;
+    color: #000;
+    font-weight: 500;
+    border-radius: 10px;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    max-width: 150px;
+}
+
+/* Style for the delete icon (circle with X) */
+.delete-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    border: none; /* Remove default button border */
+}
+
+.delete-icon:hover {
+    background-color: darkred;
+}
+
+

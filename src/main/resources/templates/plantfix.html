@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant List</title>
+</head>
+<body>
+    <h1>Plant List</h1>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Unit</th>
+                <th>Latin Name</th>
+                <th>Scientific Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Iterate over the plants list passed from the controller -->
+            <tr th:each="plant : ${plants}">
+                <td th:text="${plant.plantId}"></td>
+                <td th:text="${plant.plantsName.plantName}"></td>
+                <td th:text="${plant.plantDesc}"></td>
+                <td th:text="${plant.plantUnit}"></td>
+                <td th:text="${plant.plantLatinName}"></td>
+                <td th:text="${plant.plantSciName}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

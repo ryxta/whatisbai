@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มชื่อพืช</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div th:replace="/fragments/navbar-pc::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div th:if="${message}" class="alert alert-info" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+    <br>
+    <div class="container mt-4">
+        <h1>เพิ่มชื่อพืช</h1>
+
+        <!-- Medicine Form -->
+        <form id="plantsNameForm" th:action="@{/plants/name/save}" th:object="${plantsName}" method="post" enctype="multipart/form-data">
+            <label for="plantName" class="form-label">ชื่อพืช</label>
+            <input type="text" id="plantName" class="form-control" th:field="*{plantName}" required /><br />
+
+            <label for="plantNameInModel" class="form-label">ชื่อพืชในโมเดล</label>
+            <input type="text" id="plantNameInModel" class="form-control" th:field="*{plantNameInModel}" required /><br />
+
+            <label for="plantImage" class="form-label">อัพโหลดภาพพืช</label>
+            <input type="file" id="plantImage" class="form-control" name="plantImage" accept="image/*" /><br />
+            <div>
+                <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 400px; margin-top: 10px;" />
+            </div>
+
+
+            <label for="plantNameHeadlinePara1" class="form-label">หัวข้อย่อหน้าที่ 1</label>
+            <input type="text" id="plantNameHeadlinePara1" class="form-control" th:field="*{plantNameHeadlinePara1}"/><br />
+
+            <label for="plantNameHeadlinePara2" class="form-label">หัวข้อย่อหน้าที่ 2</label>
+            <input type="text" id="plantNameHeadlinePara2" class="form-control" th:field="*{plantNameHeadlinePara2}"/><br />
+
+            <label for="plantNameHeadlinePara3" class="form-label">หัวข้อย่อหน้าที่ 3</label>
+            <input type="text" id="plantNameHeadlinePara3" class="form-control" th:field="*{plantNameHeadlinePara3}"/><br />
+
+            <label for="plantNameHeadlinePara4" class="form-label">หัวข้อย่อหน้าที่ 4</label>
+            <input type="text" id="plantNameHeadlinePara4" class="form-control" th:field="*{plantNameHeadlinePara4}"/><br />
+
+            <label for="plantNameDescPara1" class="form-label">ข้อมูลย่อหน้าที่ 1</label>
+            <textarea id="plantNameDescPara1" class="form-control" th:field="*{plantNameDescPara1}" rows="7" cols="80"></textarea><br />
+
+            <label for="plantNameDescPara2" class="form-label">ข้อมูลย่อหน้าที่ 2</label>
+            <textarea id="plantNameDescPara2" class="form-control" th:field="*{plantNameDescPara2}" rows="7" cols="80"></textarea><br />
+
+            <label for="plantNameDescPara3" class="form-label">ข้อมูลย่อหน้าที่ 3</label>
+            <textarea id="plantNameDescPara3" class="form-control" th:field="*{plantNameDescPara3}" rows="7" cols="80"></textarea><br />
+
+            <label for="plantNameDescPara4" class="form-label">ข้อมูลย่อหน้าที่ 4</label>
+            <textarea id="plantNameDescPara4" class="form-control" th:field="*{plantNameDescPara4}" rows="7" cols="80"></textarea><br />
+            <br>
+            <br>
+            <h2>ส่วนของพืช</h2>
+            <br>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ส่วน</th>
+                        <th>ชื่อละติน</th>
+                        <th>ชื่อทางวิทยาศาสตร์</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="plantsQueueBody">
+                </tbody>
+            </table>
+
+            <!-- Hidden field to store plant data for submission -->
+            <input type="hidden" id="plantsInQueueHidden" name="plantsInQueue" />
+
+            <br>
+            <h3>เพิ่มส่วนพืชใหม่</h3>
+            <div id="addPlantForm">
+                <label for="plantUnit" class="form-label">ส่วน</label>
+                <input type="text" id="plantUnit" class="form-control" name="plantUnit"/><br />
+
+                <label for="plantLatinName" class="form-label">ชื่อละติน</label>
+                <input type="text" id="plantLatinName" class="form-control" name="plantLatinName" /><br />
+
+                <label for="plantSciName" class="form-label">ชื่อทางวิทยาศาสตร์</label>
+                <input type="text" id="plantSciName" class="form-control" name="plantSciName" /><br />
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" id="addPlantButton">เพิ่มส่วนพืช</button>
+                <button type="submit" class="btn btn-success" id="savePlantsNameButton">บันทึกข้อมูลพืช</button>
+            </div>
+        </form>
+    </div>
+    <br>
+    <br>
+
+    <!-- jQuery UI Autocomplete and Form Script -->
+    <script>
+        $(document).ready(function () {
+            $("#addPlantButton").on("click", function () { 
+                var plantUnit = $("#plantUnit").val();
+                var plantLatinName = $("#plantLatinName").val();
+                var plantSciName = $("#plantSciName").val();
+
+                var row = `<tr id="plant-${plantUnit}">
+                    <td>${plantUnit}</td>
+                    <td>${plantLatinName}</td>
+                    <td>${plantSciName}</td>
+                    <td><button type="button" class="removePlantButton btn btn-danger" data-id="${plantUnit}">ลบ</button></td>
+                    <input type="hidden" name="plantsInQueue" value="${plantUnit}:${plantLatinName}:${plantSciName}" id="plantInQueue-${plantUnit}" />
+                </tr>`;
+                $("#plantsQueueBody").append(row);
+                $("#plantUnit").val('');
+                $("#plantLatinName").val('');
+                $("#plantSciName").val('');
+            });
+
+            // Remove plant from queue
+            $("#plantsQueueBody").on('click', '.removePlantButton', function () {
+                $(this).closest('tr').remove();
+            });
+
+        });
+
+        $("#plantImage").on("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#imagePreview").attr("src", e.target.result).show();
+                }
+                reader.readAsDataURL(file);
+            } else {
+                $("#imagePreview").hide();
+            }
+        });
+    </script>
+</body>
+</html>

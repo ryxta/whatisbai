@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มสูตรยาใหม่</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+    <!-- jQuery CDN (Make sure this is included) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- jQuery UI for Autocomplete -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <style>
+        .ui-autocomplete {
+            max-height: 200px; /* Set a maximum height */
+            overflow-y: auto; /* Enable scrolling */
+            border: 1px solid #ccc; /* Border color */
+            background: #fff; /* Background color */
+            z-index: 1000; /* Ensure it appears above other elements */
+        }
+
+
+        .ui-autocomplete .ui-menu-item {
+            padding: 8px; /* Padding for each item */
+            cursor: pointer; /* Pointer on hover */
+        }
+
+        .ui-autocomplete .ui-menu-item:hover {
+            background: #f0f0f0; /* Change background on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="/fragments/navbar-pc::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div th:if="${message}" class="alert alert-info" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+    <div class="container mt-4">
+        <h1>เพิ่มสูตรยาใหม่</h1>
+        <br>
+        <!-- Medicine Form -->
+        <form id="medicineForm" th:action="@{/medicines/save}" th:object="${medicine}" method="post">
+            <!-- Medicine Fields -->
+            <label for="medName">ชื่อสูตร</label>
+            <input type="text" class="form-control" id="medName" th:field="*{medName}" required /><br />
+
+            <label for="medRef">ที่มา</label>
+            <textarea id="medRef" class="form-control" th:field="*{medRef}" rows="4" cols="50"></textarea><br />
+
+            <label for="medBenifit">สรรพคุณ</label>
+            <textarea id="medBenifit" class="form-control" th:field="*{medBenifit}" rows="4" cols="50"></textarea><br />
+
+            <label for="medUseForm">รูปแบบยา</label>
+            <textarea id="medUseForm" class="form-control" th:field="*{medUseForm}" rows="4" cols="50"></textarea><br />
+
+            <label for="medProhibition">ข้อห้ามในการใช้</label>
+            <textarea id="medProhibition" class="form-control" th:field="*{medProhibition}" rows="4" cols="50"></textarea><br />
+
+            <label for="medCaution">ข้อควรระวัง</label>
+            <textarea id="medCaution" class="form-control" th:field="*{medCaution}" rows="15" cols="50"></textarea><br />
+
+            <label for="medDose">ขนาดและวิธีการใช้</label>
+            <textarea id="medDose" class="form-control" th:field="*{medDose}" rows="4" cols="50"></textarea><br />
+
+            <label for="medSideEffect">ผลข้างเคียง</label>
+            <textarea id="medSideEffect" class="form-control" th:field="*{medSideEffect}" rows="15" cols="50"></textarea><br />
+
+            <label for="medDesc">ข้อมูลเพิ่มเติม</label>
+            <textarea id="medDesc" class="form-control" th:field="*{medDesc}" rows="20" cols="50"></textarea><br />
+
+            <br>
+            <h2>รายการตัวยา</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ตัวยา</th>
+                        <th>จำนวน</th>
+                        <th>หน่วย</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="plantsQueueBody">
+                    <!-- Dynamically populated -->
+                </tbody>
+            </table>
+            <br>
+            <br>
+            <!-- Hidden field to store plant data -->
+            <input type="hidden" id="plantsInQueueHidden" name="plantsInQueue" />
+
+            <!-- Add New Plant Section -->
+            <h3>เพิ่มตัวยา</h3>
+            <br>
+            <div id="addPlantForm" class="mb-3">
+                <label for="plantName">ชื่อตัวยา</label>
+                <input type="text" id="plantName" class="form-control" name="plantName" placeholder="ชื่อตัวยา" />
+                <input type="hidden" id="plantId" name="plantId"/>
+            
+                <br>
+                <label for="quantity">จำนวน</label>
+                <input type="number" id="quantity" class="form-control" name="quantity" /><br />
+            
+                <label for="unit">หน่วย</label>
+                <input type="text" id="unit" class="form-control" name="unit" /><br />
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" id="addPlantButton">เพิ่มตัวยา</button>
+                <button type="submit" class="btn btn-success" id="saveMedicineButton">บันทึกข้อมูลยา</button>
+            </div>
+            
+        </form>
+    </div>
+    <br>
+    <br>
+
+    <script>
+        $(document).ready(function () {
+            // Autocomplete for plant names
+            $("#plantName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '/medicines/search-plants',
+                        dataType: "json",
+                        data: {
+                            term: request.term
+                        },
+                        success: function (data) {
+                            response(data);
+                        },
+                        error: function () {
+                            console.error('Error fetching plant data');
+                        }
+                    });
+                },
+                delay: 300,
+                select: function (event, ui) {
+                    $("#plantName").val(ui.item.label);
+                    $("#plantId").val(ui.item.value);
+                    return false;
+                }
+            });
+
+            // Ensure that the add plant button is only clicked once per plant
+            $("#addPlantButton").off("click").on("click", function () {
+                var plantId = $("#plantId").val();
+                var plantName = $("#plantName").val();
+                var quantity = $("#quantity").val();
+                var unit = $("#unit").val();
+
+                // Check if the plant is already in the queue
+                var isPlantInQueue = $("#plantsQueueBody input[name='plantsInQueue']").filter(function () {
+                    return $(this).val().split(':')[0] === plantId;
+                }).length > 0;
+
+                if (plantId && quantity && !isPlantInQueue) {
+                    var row = `<tr id="plant-${plantId}">
+                        <td>${plantName}</td>
+                        <td>${quantity}</td>
+                        <td>${unit}</td>
+                        <td><button type="button" class="removePlantButton btn btn-danger">ลบ</button></td>
+                        <input type="hidden" name="plantsInQueue" value="${plantId}:${quantity}:${unit}" />
+                    </tr>`;
+                    $("#plantsQueueBody").append(row);
+
+                    // Clear the inputs
+                    $("#plantName").val('');
+                    $("#plantId").val('');
+                    $("#quantity").val('');
+                } else if (isPlantInQueue) {
+                    alert('This plant is already in the queue.');
+                } else {
+                    alert('Please select a plant and enter size.');
+                }
+            });
+
+            // Remove plant from queue
+            $("#plantsQueueBody").on('click', '.removePlantButton', function () {
+                $(this).closest('tr').remove();
+            });
+
+            // Handle form submission
+            $("#medicineForm").off("submit").on("submit", function (event) {
+                // Prevent multiple submissions by disabling the button
+                $("#saveMedicineButton").prop("disabled", true);
+
+                // Update hidden field with plant data
+                var plantsInQueue = [];
+                $("#plantsQueueBody tr").each(function () {
+                    var plantId = $(this).find("input[name='plantsInQueue']").val();
+                    plantsInQueue.push(plantId);
+                });
+
+                // Set the hidden field value
+                $("#plantsInQueueHidden").val(plantsInQueue.join(","));
+
+                // Allow form to be submitted
+                return true;
+            });
+
+        });
+    </script>
+
+</body>
+</html>

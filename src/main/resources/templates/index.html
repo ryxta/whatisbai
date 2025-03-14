@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผลการค้นหา</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div th:replace="/fragments/navbar::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div class="container mt-4">
+        <h1>คุณต้องการทำอะไร?</h1>
+        <br>
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="card" style="background-color: #8FC18D; border-radius: 20px;">
+                    <div class="row g-0 align-items-center">
+                        <!-- Image Section -->
+                        <div class="col-6">
+                            <a th:href="@{/upload}" class="text-dark" style="text-decoration: none;" id="uploadcard">
+                                <img th:src="@{/icon/plant-scan-icon.png}" 
+                                     alt="Plant icon" class="img-fluid" 
+                                     style="border-radius: 10px; width: 100%; height: 100%; object-fit: cover;" />
+                            </a>
+                        </div>
+                        <!-- Text Section -->
+                        <div class="col-6">
+                            <a th:href="@{/upload}" class="text-dark" style="text-decoration: none;">
+                                <div class="card-body">
+                                    <!-- Plant Name -->
+                                    <h5 class="card-title" style="font-weight: 400; color: white;">สแกนหาใบพืช</h5>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="col-12 mb-3">
+                <div class="card" style="background-color: #8FC18D; border-radius: 20px;">
+                    <div class="row g-0 align-items-center">
+                        <!-- Image Section -->
+                        <div class="col-6">
+                            <a th:href="@{/medicines/find}" class="text-dark" style="text-decoration: none;" id="medicinecard">
+                                <img th:src="@{/icon/medicine-search-icon.png}" 
+                                     alt="Plant icon" class="img-fluid" 
+                                     style="border-radius: 10px; width: 100%; height: 100%; object-fit: cover;" />
+                            </a>
+                        </div>
+                        <!-- Text Section -->
+                        <div class="col-6">
+                            <a th:href="@{/medicines/find}" class="text-dark" style="text-decoration: none;">
+                                <div class="card-body">
+                                    <!-- Plant Name -->
+                                    <h5 class="card-title" style="font-weight: 400; color: white;">ค้นหาสูตรยา</h5>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="col-12 mb-3">
+                <div class="card" style="background-color: #8FC18D; border-radius: 20px;">
+                    <div class="row g-0 align-items-center">
+                        <!-- Image Section -->
+                        <div class="col-6">
+                            <a th:href="@{/uploadfordataset}" class="text-dark" style="text-decoration: none;" id="uploadfordtcard">
+                                <img th:src="@{/icon/upload-main-icon.png}" 
+                                     alt="Plant icon" class="img-fluid" 
+                                     style="border-radius: 10px; width: 100%; height: 100%; object-fit: cover;" />
+                            </a>
+                        </div>
+                        <!-- Text Section -->
+                        <div class="col-6">
+                            <a th:href="@{/uploadfordataset}" class="text-dark" style="text-decoration: none;">
+                                <div class="card-body">
+                                    <!-- Plant Name -->
+                                    <h5 class="card-title" style="font-weight: 400; color: white;">อัปโหลดรูปภาพ</h5>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

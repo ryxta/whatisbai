@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หาใบพืช</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div th:replace="/fragments/navbar::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="container">
+        <h1>ค้นหาใบสมุนไพร</h1>
+        <div class="upload-section text-center">
+            <!-- Clickable image to trigger file input -->
+            <label for="file">
+                <!-- Image element to show the upload icon initially, and the uploaded image later -->
+                <img id="uploadIcon" th:src="@{/icon/upload-icon.png}" alt="upload icon" style="max-width: 150px; cursor: pointer;" />
+            </label>
+            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" id="file" name="file" class="custom-file-upload" accept="image/*" required style="display:none;" />
+                <p>เลือกไฟล์ภาพใบพืชสมุนไพร</p>
+                <button type="submit" class="btn-upload btn btn-success">ค้นหาใบสมุนไพร</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="waitModal" tabindex="-1" aria-labelledby="waitModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="waitModalLabel">กรุณารอสักครู่</h5>
+                </div>
+                <div class="modal-body d-flex justify-content-center align-items-center flex-column">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">เรากำลังประมวลผล....</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript to trigger the modal and delay form submission -->
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+            // Prevent the form from submitting immediately
+            event.preventDefault();
+
+            // Show the modal
+            var waitModal = new bootstrap.Modal(document.getElementById('waitModal'));
+            waitModal.show();
+
+            // Delay the form submission for a short time to allow the modal to be visible
+            setTimeout(() => {
+                this.submit();
+            }, 1000); // Delay form submission by 1 second
+        });
+
+        // JavaScript to preview the uploaded image and replace the icon
+        document.getElementById("file").addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // Replace the icon with the uploaded image
+                    const uploadIcon = document.getElementById("uploadIcon");
+                    uploadIcon.src = e.target.result;
+                    uploadIcon.style.maxWidth = "150px"; // Adjust the size if needed
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

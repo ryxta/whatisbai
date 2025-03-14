@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผลการค้นหา</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div th:replace="/fragments/navbar::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div class="container mt-4">
+        <h1>ผลลัพธ์คือ</h1>
+        <br>
+        <div class="row" th:each="modelout : ${modelOutput}">
+            <div class="col-12 mb-3">
+                <div class="card" style="background-color: #8FC18D; border-radius: 20px;">
+                    <div class="row g-0 align-items-center">
+                        <!-- Image Section -->
+                        <div class="col-4">
+                            <img th:src="@{{image}(image=${modelout.plantsName.plantShowImagePath})}" 
+                                 alt="Plant Image" class="img-fluid" 
+                                 style="border-radius: 10px; width: 200px; height: 150px; object-fit: cover;" />
+                        </div>
+                        
+
+                        <!-- Text Section -->
+                        <div class="col-8">
+                            <div class="card-body">
+                                <!-- Plant Name -->
+                                <h5 class="card-title" th:text="${modelout.plantsName.plantName}" style="font-weight: 700;"></h5>
+                                
+                                <!-- Confidence Score -->
+                                <p>ใกล้เคียง <span th:text="${#numbers.formatDecimal(modelout.confidenceScore * 100, 1, '0')}"></span>%</p>
+                                <div class="progress" style="height: 8px; border-radius: 5px;">
+                                    <div class="progress-bar" role="progressbar" 
+                                         th:style="'width: ' + ${modelout.confidenceScore * 100} + '%; background-color: #FFFFFF;'"
+                                         aria-valuenow="${modelout.confidenceScore}" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                                
+                                
+                                <!-- View Details Button -->
+                                <a th:href="@{/plantsname/{id}(id=${modelout.plantsName.plantNameId})}" 
+                                   class="btn btn-light mt-3" style="border-radius: 10px;">ดูข้อมูล</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>อัปโหลดรูปภาพ</title>
+
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div th:replace="/fragments/navbar::.navbar"></div>
+    <br>
+    <br>
+    <br>
+    <div class="container mt-4">
+        <h1>อัปโหลดรูปภาพ</h1>
+        <br>
+        <p>คุณสามารถช่วยผู้พัฒนาได้ ด้วยการอัปโหลดรูปภาพใบพืชสมุนไพรและระบุชนิด เพื่อนำไปพัฒนาโมเดลต่อไป</p>
+        <div class="upload-section">
+            <label for="file" class="text-center d-block">
+                <img id="uploadIcon" th:src="@{/icon/upload-icon.png}" alt="upload icon" style="max-width: 150px; cursor: pointer;" />
+            </label>
+            
+            <form id="uploadForm" action="/uploadfordataset" method="post" enctype="multipart/form-data">
+                <input type="file" id="file" name="files" class="custom-file-upload" accept="image/*" multiple required style="display:none;" onchange="previewImages();"/>
+                <p class="text-center">*เลือกไฟล์ภาพใบพืชสมุนไพร</p>
+                <div id="imagePreview" class="row mt-3"></div>
+                <label for="submitPlantName" class="d-block text-start">กรอกชื่อพืชข้างล่างนี้</label>
+                <input type="text" id="submitPlantName" name="submitPlantName" class="form-control" placeholder="ชื่อพืช" aria-label="ชื่อพืช" required/><br>
+                <div class="text-center">
+                    <button type="submit" class="btn-upload btn btn-success">อัปโหลด</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="waitModal" tabindex="-1" aria-labelledby="waitModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="waitModalLabel">กรุณารอสักครู่</h5>
+                </div>
+                <div class="modal-body d-flex justify-content-center align-items-center flex-column">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">เรากำลังประมวลผล....</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript to trigger the modal and delay form submission -->
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var waitModal = new bootstrap.Modal(document.getElementById('waitModal'));
+            waitModal.show();
+
+            setTimeout(() => {
+                this.submit();
+            }, 1000); 
+        });
+
+        let filesArray = [];
+
+        function previewImages() {
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = ''; // Clear previous previews
+
+        filesArray.forEach((file, index) => {
+            if (!file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const colDiv = document.createElement('div');
+                colDiv.classList.add('col-4', 'mb-3');
+                colDiv.style.position = 'relative'; // Set relative position for the delete icon
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('img-fluid');
+                img.style.borderRadius = '10px';
+                img.style.width = '100%';
+                img.style.height = '150px';
+                img.style.objectFit = 'cover';
+
+                const deleteIcon = document.createElement('span');
+                deleteIcon.textContent = '✖';
+                deleteIcon.style.position = 'absolute';
+                deleteIcon.style.top = '5px';
+                deleteIcon.style.right = '10px';
+                deleteIcon.style.color = 'white';
+                deleteIcon.style.backgroundColor = 'red';
+                deleteIcon.style.borderRadius = '50%';
+                deleteIcon.style.padding = '5px';
+                deleteIcon.style.cursor = 'pointer';
+                deleteIcon.style.width = '25px';
+                deleteIcon.style.height = '25px';
+                deleteIcon.style.display = 'flex';
+                deleteIcon.style.alignItems = 'center';
+                deleteIcon.style.justifyContent = 'center';
+                deleteIcon.style.fontSize = '14px';
+                deleteIcon.onclick = function() {
+                    removeImage(index);
+                };
+
+                colDiv.appendChild(img);
+                colDiv.appendChild(deleteIcon);
+                preview.appendChild(colDiv);
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function removeImage(index) {
+        filesArray.splice(index, 1);  // Remove the image from the array
+        updateFileInput(); // Update the file input element to reflect the change
+        previewImages();  // Refresh the preview
+    }
+
+    // Update the file input element based on the current filesArray
+    function updateFileInput() {
+        const dataTransfer = new DataTransfer(); // Create a new DataTransfer object
+
+        // Add all remaining files back to the DataTransfer object
+        filesArray.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+
+        // Update the file input with the updated list of files
+        document.getElementById('file').files = dataTransfer.files;
+    }
+
+    document.getElementById('file').addEventListener('change', function() {
+        const newFiles = Array.from(this.files);
+        filesArray = [...filesArray, ...newFiles]; // Add new files to the array
+        previewImages();  // Preview the newly added images
+    });
+
+    </script>
+</body>
+</html>    
